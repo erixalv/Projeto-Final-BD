@@ -32,6 +32,7 @@ class User(Base):
     nickname = Column(String(15), nullable=False, unique=True)
     email = Column(String(254), nullable=False, unique=True)
     senha_hash = Column(String(200), nullable=False)
+    role = Column(String(10), nullable=False)
 
     reviews_anime = relationship(
         "ReviewAnime", back_populates="user", cascade="all, delete-orphan"

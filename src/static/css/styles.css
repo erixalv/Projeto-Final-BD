@@ -49,5 +49,9 @@ div.login-section::after {
     width: 30%;
     background-color: blue; 
     z-index: -1;
+    border-color: white;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
 }
 
