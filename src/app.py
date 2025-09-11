@@ -1,8 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from config.bd_config import User, get_session  # Importando User e get_session
 from passlib.context import CryptContext
 import os
 from dotenv import load_dotenv
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from services.user_service import User_CRUD
+from config.bd_config import User, get_session  # Importando User e get_session
+
+user_managing = User_CRUD()
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -27,18 +34,23 @@ def login():
         email = request.form['email']
         senha = request.form['senha']
 
-        # A sessão deve estar ativa para carregar o usuário
-        with get_session() as db:  # Usando o gerenciador de contexto da sessão
-            # Consultando o banco de dados para validar o usuário
-            user = db.query(User).filter_by(email=email).first()
+        with get_session() as db:
+            # Busca o usuário dentro da sessão
+            user = db.query(User).filter(User.email == email).one_or_none()
 
-            if user and verificar_senha(user, senha):  # Chamada da função de verificação de senha
+            if user is None:
+                flash("Email ou senha incorretos!", 'danger')
+                return render_template('index.html')
+
+            # A verificação da senha já pode ser feita fora da sessão
+            if pwd_context.verify(senha, user.senha_hash):
                 return redirect(url_for('dashboard'))
             else:
                 flash("Email ou senha incorretos!", 'danger')
                 return render_template('index.html')
-    
+
     return render_template('index.html')
+
 
 
 
