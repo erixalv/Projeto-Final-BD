@@ -51,7 +51,7 @@ class User_CRUD:
     def listar_usuarios(self):
         with get_session() as db:
             return(
-                db.query(User).order_by(User.nome.asc()).offset(offset=0).limit(50).all()
+                db.query(User).order_by(User.nome.asc()).all()
             )
         
     def atualizar_senha(self, nick : str, senha_atual : str, senha_nova : str):
