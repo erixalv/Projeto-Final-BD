@@ -44,19 +44,23 @@ def login():
 
             # A verificação da senha já pode ser feita fora da sessão
             if pwd_context.verify(senha, user.senha_hash):
-                return redirect(url_for('dashboard'))
+                if user.role == 'USER':
+                    return redirect(url_for('cadastro_reviews'))
+                else:
+                    return redirect(url_for("cadastro_animes"))
             else:
                 flash("Email ou senha incorretos!", 'danger')
                 return render_template('index.html')
 
     return render_template('index.html')
 
+@app.route('/user', methods=['GET', 'POST'])
+def cadastro_reviews():
+    return render_template('reviews.html')
 
-
-
-@app.route('/home')
-def dashboard():
-    return render_template('home.html')
+@app.route('/admin', methods=['GET', 'POST'])
+def cadastro_animes():
+    return render_template('gerenciador.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

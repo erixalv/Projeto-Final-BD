@@ -57,6 +57,6 @@ class ReviewAnimeCRUD():
 
 
 review = ReviewAnimeCRUD()
-#review.insert_review_anime("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Gostei muito do anime, muito perfeito, melhor anime já feito!")      
+review.insert_review_anime("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Gostei muito do anime, muito perfeito, melhor anime já feito!")      
 #review.atualizar_review("7aeef9b9-efc2-41e2-b7ee-7d83f1c3dbe6", 4, "Passei a gostar menos depois de ilha dos tritoes, mas muito bom")
-review.delete_review_anime("7aeef9b9-efc2-41e2-b7ee-7d83f1c3dbe6")  
+#review.delete_review_anime("7aeef9b9-efc2-41e2-b7ee-7d83f1c3dbe6")  

@@ -82,6 +82,7 @@ class Episodes(Base):
     __tablename__ = "episodios"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    num_ep = Column(Integer, nullable=False)
     nome = Column(String(70), nullable=False)
     anime_id = Column(UUID(as_uuid=True),
                       ForeignKey("anime.id", ondelete="CASCADE"),
