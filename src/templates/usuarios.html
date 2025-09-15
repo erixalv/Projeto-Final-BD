@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Usuários</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/Crountch-One-Piece-Jolly-Roger-Luffys-flag.ico') }}" type="image/x-icon">
+</head>
+<body>
+  <header class="header">
+    <h1>Gerenciamento de Usuários</h1>
+    <nav>
+      <a href="{{ url_for('cadastro_reviews') }}">Reviews</a>
+      <a href="{{ url_for('gerenciador_animes') }}">Admin</a>
+      <a href="{{ url_for('relatorios') }}">Relatórios</a>
+      <a class="active" href="{{ url_for('usuarios') }}">Usuários</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- CADASTRAR -->
+    <section class="card">
+      <h2>Cadastrar Usuário</h2>
+      <form class="form-grid" method="post" action="{{ url_for('usuarios') }}">
+        <label>Nome
+          <input type="text" name="nome" required>
+        </label>
+        <label>Nickname
+          <input type="text" name="nickname" required>
+        </label>
+        <label>Email
+          <input type="email" name="email" required>
+        </label>
+        <label>Senha
+          <input type="password" name="senha" required>
+        </label>
+        <label>Role
+          <select name="role">
+            <option value="USER" selected>USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </label>
+        <div class="actions">
+          <button type="submit" name="acao" value="cadastrarUsuario">Cadastrar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- REMOVER -->
+    <section class="card">
+      <h2>Remover Usuário</h2>
+      <form class="form-row" method="post" action="{{ url_for('usuarios') }}">
+        <input type="text" name="nickname_r" placeholder="Nickname" required>
+        <button type="submit" name="acao" value="removerUsuario">Remover</button>
+      </form>
+    </section>
+
+    <!-- BUSCAR -->
+    <section class="card">
+      <h2>Buscar Usuário</h2>
+      <div class="split">
+        <form class="form-row" method="post" action="{{ url_for('usuarios') }}">
+          <input type="text" name="nickname_l" placeholder="Nickname" required>
+          <button type="submit" name="acao" value="buscarUsuarioPorNick">Buscar por Nick</button>
+        </form>
+        <form class="form-row" method="post" action="{{ url_for('usuarios') }}">
+          <input type="email" name="email_l" placeholder="Email" required>
+          <button type="submit" name="acao" value="buscarUsuarioPorEmail">Buscar por Email</button>
+        </form>
+      </div>
+
+      <div class="result">
+        {% if usuario %}
+          <div class="card inner">
+            <strong>Resultado:</strong>
+            <p><b>ID:</b> {{ usuario.id }}</p>
+            <p><b>Nome:</b> {{ usuario.nome }}</p>
+            <p><b>Nickname:</b> {{ usuario.nickname }}</p>
+            <p><b>Email:</b> {{ usuario.email }}</p>
+            <p><b>Role:</b> {{ usuario.role }}</p>
+          </div>
+        {% else %}
+          <p class="muted">Nenhum usuário carregado.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- LISTAR TODOS -->
+    <section class="card">
+      <h2>Listar Usuários</h2>
+      <form method="post" action="{{ url_for('usuarios') }}" style="margin-bottom: 10px;">
+        <button type="submit" name="acao" value="listarUsuarios">Recarregar Lista</button>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Nickname</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if usuarios and usuarios|length > 0 %}
+              {% for u in usuarios %}
+              <tr>
+                <td>{{ u.nome }}</td>
+                <td>{{ u.nickname }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.role }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="4" class="empty">Nenhum usuário encontrado.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ATUALIZAR SENHA -->
+    <section class="card">
+      <h2>Atualizar Senha</h2>
+      <form class="form-grid" method="post" action="{{ url_for('usuarios') }}">
+        <label>Nickname
+          <input type="text" name="nickname_senha" required>
+        </label>
+        <label>Senha atual
+          <input type="password" name="senha_atual" required>
+        </label>
+        <label>Senha nova
+          <input type="password" name="senha_nova" required>
+        </label>
+        <div class="actions">
+          <button type="submit" name="acao" value="atualizarSenha">Atualizar Senha</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ATUALIZAR DADOS -->
+    <section class="card">
+      <h2>Atualizar Dados</h2>
+      <form class="form-grid" method="post" action="{{ url_for('usuarios') }}">
+        <label>Nickname (do usuário a atualizar)
+          <input type="text" name="nickname_dados" required>
+        </label>
+        <label>Novo nome
+          <input type="text" name="nome_novo" placeholder="(opcional)">
+        </label>
+        <label>Novo email
+          <input type="email" name="email_novo" placeholder="(opcional)">
+        </label>
+        <div class="actions">
+          <button type="submit" name="acao" value="atualizarDados">Salvar alterações</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+</body>
+</html>

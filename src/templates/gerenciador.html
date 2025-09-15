@@ -3,12 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/images/Crountch-One-Piece-Jolly-Roger-Luffys-flag.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../static/css/gerenciador.css">
     <title>Gerenciador</title>
 </head>
 <body>
     <h1>Gerenciador de Cadastros</h1>
-    <h2>Cadastro de Usuários</h2>
-    <h2>Cadastro de Animes</h2>
+    <nav>
+        <a href="relatorios">Relatórios</a>
+        <a href="usuarios">Usuários</a>
+    </nav>
+        <h2>Cadastro de Animes</h2>
+            <h3>Inserir Anime</h3>
+                <form method="POST">
+                    <p>Nome: </p>
+                    <input type="text" name="nome_do_anime" id="nome_do_anime">
+                    <p>Gênero: </p>
+                    <input type="text" name="genero_do_anime" id="genero_do_anime">
+                    <p>Estúdio: </p>
+                    <input type="text" name="estudio_do_anime" id="estudio_do_anime">
+                    <p>Número de Episódios: </p>
+                    <input type="number" name="numero_de_ep" id="numero_de_ep" min="0">
+                    <p>Sinopse: </p>
+                    <input type="text" name="sinopse_do_anime" id="sinopse_do_anime">
+                    <button type="submit" name="acao" value="cadastrarAnime">Cadastrar</button>
+                </form>
+            <h3>Remover Anime</h3>
+                <form action="" method="POST">
+                    <p>Nome: </p>
+                    <input type="text" name="nome_do_anime_r" id="nome_do_anime_r">
+                    <button type="submit" name="acao" value="removerAnime">Remover</button>
+                </form>
+            <h3>Buscar Anime</h3>
+                <form action="" method="post">
+                    <p>Nome: </p>
+                    <input type="text" name="nome_do_anime_l" id="nome_do_anime_l">
+                    <button type="submit" name="acao" value="listarAnime">Buscar</button>
+                </form>
+                <h4>Resultado</h4>
+                {% if anime %}
+                    <div>
+                        <p><strong>ID:</strong> {{ anime.id }}</p>
+                        <p><strong>Nome:</strong> {{ anime.nome }}</p>
+                        <p><strong>Gênero:</strong> {{ anime.genero }}</p>
+                        <p><strong>Estúdio:</strong> {{ anime.studio }}</p>
+                        <p><strong>Número de Episódios:</strong> {{ anime.numero_de_eps }}</p>
+                        <p><strong>Sinopse:</strong> {{ anime.sinopse }}</p>
+                    </div>
+                {% else %}
+                    <p>Nenhum anime encontrado ainda.</p>
+                {% endif %}
+
+            <h3>Listar Animes</h3>
+            <form action="" method="post">
+                <button type="submit" name="acao" value="listarAllAnime">Listar</button>
+            </form>
+            {% if lista_nomes and lista_nomes|length > 0 %}
+                <h4>Animes cadastrados:</h4>
+                <ul>
+                    {% for anime in lista_nomes %}
+                    <li>{{ anime[0] }}</li>
+                    {% endfor %}
+                </ul>
+            {% elif lista_nomes is not none %}
+                <p>Nenhum anime cadastrado.</p>
+            {% endif %}
+
+            <h3>Alterar Anime</h3>
+            <form action="" method="post" style="margin-bottom:1rem">
+                <p>Digite o nome do anime:</p>
+                <input type="text" name="nome_do_anime_edit" id="nome_do_anime_edit" required>
+                <button type="submit" name="acao" value="prepararAlteracao">Carregar dados</button>
+            </form>
+
+            {% if anime_edit %}
+            <form action="" method="post">
+                <input type="hidden" name="anime_id" value="{{ anime_edit.id }}">
+                <p>Nome:</p>
+                <input type="text" name="nome_edit" value="{{ anime_edit.nome }}" required>
+
+                <p>Gênero:</p>
+                <input type="text" name="genero_edit" value="{{ anime_edit.genero }}">
+
+                <p>Estúdio:</p>
+                <input type="text" name="studio_edit" value="{{ anime_edit.studio }}">
+
+                <p>Número de Episódios:</p>
+                <input type="number" name="numero_edit" value="{{ anime_edit.numero_episodios }}" min="0">
+
+                <p>Sinopse:</p>
+                <input type="text" name="sinopse_edit" value="{{ anime_edit.sinopse }}">
+
+                <button type="submit" name="acao" value="alterarAnime">Salvar alterações</button>
+            </form>
+            {% endif %}
+                    
     <h2>Cadastro de Episódios</h2>
+        <h3>Inserir Episódio</h3>
+        <form method="POST">
+            <p>Nome: </p>
+            <input type="text" name="nome_do_episodio" id="nome_do_episodio">
+            <p>Número do Episódio (no anime): </p>
+            <input type="number" name="numero_do_ep" id="numero_do_ep" min="0">
+            <p>Anime: </p>
+            <input type="text" name="anime_do_ep" id="anime_do_ep">
+            <p>Sinopse: </p>
+            <input type="text" name="sinopse_do_episodio" id="sinopse_do_episodio">
+            <button type="submit" name="acao" value="cadastrarEpisodio">Cadastrar</button>
+        </form>
+        <h3>Remover Episódio</h3>
+                <form action="" method="POST">
+                    <p>Nome do episódio: </p>
+                    <input type="text" name="nome_do_episodio_r" id="nome_do_episodio_r">
+                    <button type="submit" name="acao" value="removerEpisodio">Remover</button>
+                </form>
+        <h3>Buscar Episódio</h3>
+            <form action="" method="post">
+                <p>Nome: </p>
+                <input type="text" name="nome_do_episodio_l" id="nome_do_episodio_l">
+                <button type="submit" name="acao" value="listarEpisodio">Buscar</button>
+            </form>
+            <h4>Resultado</h4>
+            {% if ep%}
+                <div>
+                    <p><strong>ID:</strong> {{ ep.id }}</p>
+                    <p><strong>Nome:</strong> {{ ep.nome }}</p>
+                    <p><strong>Número do Episódio:</strong> {{ ep.numero_ep }}</p>
+                    <p><strong>ID do Anime:</strong> {{ ep.anime_id }}</p>
+                    <p><strong>Sinopse:</strong> {{ ep.sinopse }}</p>
+                </div>
+            {% else %}
+                <p>Nenhum episódio encontrado ainda.</p>
+            {% endif %}
+        <h3>Listar Episódios</h3>
+            <form action="" method="post">
+                <button type="submit" name="acao" value="listarAllEps">Listar</button>
+            </form>
+            {% if lista_nomes_eps and lista_nomes_eps|length > 0 %}
+                <h4>Episódios cadastrados:</h4>
+                <ul>
+                    {% for ep in lista_nomes_eps %}
+                    <li>{{ ep[0] }}</li>
+                    {% endfor %}
+                </ul>
+            {% elif lista_nomes_eps is not none %}
+                <p>Nenhum episódio cadastrado.</p>
+            {% endif %}
+
+        <h3>Alterar Episódio</h3>
+            <form action="" method="post" style="margin-bottom:1rem">
+                <p>Digite o nome do episódio:</p>
+                <input type="text" name="nome_do_episodio_edit" id="nome_do_episodio_edit" required>
+                <button type="submit" name="acao" value="prepararAlteracaoEp">Carregar dados</button>
+            </form>
+
+            {% if ep_edit %}
+            <form action="" method="post">
+                <input type="hidden" name="episodio_id" value="{{ ep_edit.id }}">
+                
+                <p>Nome:</p>
+                <input type="text" name="nome_edit_ep" value="{{ ep_edit.nome }}" required>
+
+                <p>Número do Episódio:</p>
+                <input type="number" name="numero_edit_ep" value="{{ ep_edit.num_ep }}" min="0">
+
+                <p>Sinopse:</p>
+                <input type="text" name="sinopse_edit_ep" value="{{ ep_edit.sinopse }}">
+
+                <button type="submit" name="acao" value="alterarEpisodio">Salvar alterações</button>
+            </form>
+            {% endif %}
+
+
 </body>
 </html>

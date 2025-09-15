@@ -36,9 +36,12 @@ class ReviewAnimeCRUD():
         
     def listar_reviews_animes(self):
         with get_session() as db:
-            return(
-                db.query(ReviewAnime).order_by(ReviewAnime.nota.desc()).all()
+            rows = (
+                db.query(ReviewAnime.id, ReviewAnime.user_id, ReviewAnime.anime_id, ReviewAnime.nota, ReviewAnime.descricao)
+                .order_by(ReviewAnime.nota.desc())
+                .all()
             )
+            return [dict(r._mapping) for r in rows]
         
     def atualizar_review(self, reviewID, nova_nota : int = None, nova_desc : str = None):
         with get_session() as db:
@@ -50,13 +53,17 @@ class ReviewAnimeCRUD():
         
     def buscar_Review(self, reviewID):
         with get_session() as db:
-            review = db.query(ReviewAnime).filter(ReviewAnime.id == reviewID).one_or_none()
-            if review is None: return print("Review não encontrada")
-            return review
+            r = (
+                db.query(ReviewAnime.id, ReviewAnime.user_id, ReviewAnime.anime_id, ReviewAnime.nota, ReviewAnime.descricao)
+                .filter(ReviewAnime.id == reviewID)
+                .one_or_none()
+            )
+            if r is None:
+                return None
+            return dict(r._mapping)
 
 
-
-review = ReviewAnimeCRUD()
-review.insert_review_anime("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Gostei muito do anime, muito perfeito, melhor anime já feito!")      
+#review = ReviewAnimeCRUD()
+#review.insert_review_anime("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Gostei muito do anime, muito perfeito, melhor anime já feito!")      
 #review.atualizar_review("7aeef9b9-efc2-41e2-b7ee-7d83f1c3dbe6", 4, "Passei a gostar menos depois de ilha dos tritoes, mas muito bom")
 #review.delete_review_anime("7aeef9b9-efc2-41e2-b7ee-7d83f1c3dbe6")  

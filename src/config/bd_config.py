@@ -61,7 +61,7 @@ class Anime(Base):
     genero = Column(String(20), nullable=False)
     studio = Column(String(30), nullable=False)
     numero_episodios = Column(Integer, nullable=False)
-    sinopse = Column(String(100), nullable=False)
+    sinopse = Column(String(300), nullable=False)
 
     __table_args__ = (
         CheckConstraint("numero_episodios >= 0", name="chk_anime_num_eps_nonneg"),
@@ -87,7 +87,7 @@ class Episodes(Base):
     anime_id = Column(UUID(as_uuid=True),
                       ForeignKey("anime.id", ondelete="CASCADE"),
                       nullable=False)
-    sinopse = Column(String(100), nullable=False)
+    sinopse = Column(String(300), nullable=False)
 
     __table_args__ = (
         UniqueConstraint("anime_id", "nome", name="uq_episode_anime_nome"),

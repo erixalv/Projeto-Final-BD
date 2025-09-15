@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Relatórios</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+  <link rel="shortcut icon" href="../static/images/Crountch-One-Piece-Jolly-Roger-Luffys-flag.ico" type="image/x-icon">
+</head>
+<body>
+  <header class="header">
+    <h1>Relatórios</h1>
+  </header>
+
+  <main class="container">
+
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Usuários que avaliaram animes</div>
+        <div class="kpi-value">{{ qtd_usuarios }}</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Média de notas por episódio (agregado por anime)</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Anime</th>
+              <th>Qtde de Reviews</th>
+              <th>Média de Nota</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if media_anime and media_anime|length > 0 %}
+              {% for r in media_anime %}
+              <tr>
+                <td class="anime-nome">{{ r.nome }}</td>
+                <td>{{ r.count }}</td>
+                <td>{{ "%.2f"|format(r.avg if r.avg is not none else 0) }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="3" class="empty">Sem dados para exibir.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+    <h2>Média de notas por anime</h2>
+    <div class="table-wrap">
+        <table>
+        <thead>
+            <tr>
+            <th>Anime</th>
+            <th>Qtde de Reviews</th>
+            <th>Média de Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if media_por_anime and media_por_anime|length > 0 %}
+            {% for r in media_por_anime %}
+            <tr>
+                <td class="anime-nome">{{ r.anime_nome }}</td>
+                <td>{{ r.qtde_reviews }}</td>
+                <td>{{ "%.2f"|format(r.media_nota) }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr><td colspan="3" class="empty">Sem dados para exibir.</td></tr>
+            {% endif %}
+        </tbody>
+        </table>
+    </div>
+    </section>
+
+
+  </main>
+</body>
+</html>

@@ -32,14 +32,25 @@ class Anime_CRUD:
     def listar_animes(self):
         with get_session() as db:
             return db.query(Anime).order_by(Anime.nome.asc()).all()
+    
+    def listar_nomes_animes(self, db):
+        return db.query(Anime.nome).order_by(Anime.nome.asc()).all()
 
-    def buscar_anime(self, anime_id):
+    def buscar_anime_por_id(self, anime_id):
         with get_session() as db:
             anime = db.query(Anime).filter(Anime.id == anime_id).one_or_none()
             if anime is None:
                 print("Anime não encontrado.")
                 return None
             return anime
+    
+    def buscar_anime_por_nome(self, nome, db):
+        return db.query(Anime).filter(Anime.nome == nome).one_or_none()
+
+    def remover_instancia(self, inst, db):
+        db.delete(inst)
+        db.commit()
+
 
     def atualizar_anime(self, anime_id, nome=None, genero=None, studio=None, numero_episodios=None, sinopse=None):
         with get_session() as db:
@@ -75,10 +86,10 @@ class Anime_CRUD:
             return True
 
 
-anime_service = Anime_CRUD()
+#anime_service = Anime_CRUD()
 
 #anime_service.inserir_anime("Orbe: Sobre os Movimentos da Terra", "Histórico", "Madhouse", 28, "")
 
 #print(anime_service.remover_anime("5b3a05eb-adf3-41a4-958a-83ec3d61799f"))
 
-anime_service.atualizar_anime("31ce4639-a1a3-4d1a-b409-9e5e271646ae", numero_episodios=26)
+#anime_service.atualizar_anime("31ce4639-a1a3-4d1a-b409-9e5e271646ae", numero_episodios=26)

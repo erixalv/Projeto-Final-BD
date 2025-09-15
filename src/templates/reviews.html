@@ -1,15 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="../static/images/Crountch-One-Piece-Jolly-Roger-Luffys-flag.ico" type="image/x-icon">
-    <title>Reviews</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="shortcut icon" href="../static/images/Crountch-One-Piece-Jolly-Roger-Luffys-flag.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../static/css/styles_reviews.css">
+  <title>Cadastro de Reviews</title>
 </head>
 <body>
-    <h1>Home</h1>
-    <h2>Cadastro de Reviews</h2>
-    <h3>Animes</h3>
-    <h4>Episódios</h4>
+  <header>
+    <h1>Cadastro de Reviews</h1>
+    <nav>
+      <a href="#animes">Animes</a> |
+      <a href="#episodios">Episódios</a>
+    </nav>
+  </header>
+
+  <!-- ===================== ANIMES ===================== -->
+  <section id="animes" class="review-section">
+    <h2>Animes</h2>
+
+    <section class="review-section">
+      <h3>Inserir Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="nome_anime" placeholder="Nome do Anime" required>
+        <input type="number" name="nota" placeholder="Nota" min="0" max="10" step="1" required>
+        <textarea name="comentario" placeholder="Comentário" rows="3" required></textarea>
+        <button type="submit" name="acao" value="inserirReviewAnime">Inserir</button>
+      </form>
+    </section>
+
+    <section class="review-section">
+      <h3>Remover Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <button type="submit" name="acao" value="removerReviewAnime">Remover</button>
+      </form>
+    </section>
+
+    <section class="review-section">
+      <h3>Atualizar Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <input type="number" name="nova_nota" placeholder="Nova Nota" min="0" max="10" step="1">
+        <textarea name="novo_comentario" placeholder="Novo Comentário" rows="3"></textarea>
+        <button type="submit" name="acao" value="atualizarReviewAnime">Atualizar</button>
+      </form>
+    </section>
+
+    <section class="review-section">
+      <h3>Buscar Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <button type="submit" name="acao" value="buscarReviewAnime">Buscar</button>
+      </form>
+
+      {% if resultado_busca_anime %}
+        {% if resultado_busca_anime.erro %}
+          <p style="color: #b00; margin-top: 8px;">{{ resultado_busca_anime.erro }}</p>
+        {% else %}
+          <div class="card" style="margin-top: 8px; border: 1px solid #ddd; padding: 12px; border-radius: 8px;">
+            <strong>Resultado:</strong>
+            <p><b>ID:</b> {{ resultado_busca_anime.id }}</p>
+            <p><b>Usuário ID:</b> {{ resultado_busca_anime.user_id }}</p>
+            <p><b>Anime ID:</b> {{ resultado_busca_anime.anime_id }}</p>
+            <p><b>Nota:</b> {{ resultado_busca_anime.nota }}</p>
+            <p><b>Comentário:</b> {{ resultado_busca_anime.descricao or "-" }}</p>
+          </div>
+        {% endif %}
+      {% endif %}
+    </section>
+
+    <section class="review-section">
+      <h3>Lista de Reviews</h3>
+      <form class="review-form" method="post" action="" style="margin-bottom: 10px;">
+        <button type="submit" name="acao" value="listarReviewsAnimes">Recarregar Lista</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuário ID</th>
+            <th>Anime ID</th>
+            <th>Nota</th>
+            <th>Comentário</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if reviews_animes and reviews_animes|length > 0 %}
+            {% for r in reviews_animes %}
+              <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.user_id }}</td>
+                <td>{{ r.anime_id }}</td>
+                <td>{{ r.nota }}</td>
+                <td>{{ r.descricao or "-" }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="5" style="text-align:center;">Sem reviews de animes ainda.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <hr>
+
+  <!-- ===================== EPISÓDIOS ===================== -->
+  <section id="episodios" class="review-section">
+    <h2>Episódios</h2>
+
+    <section class="review-section">
+      <h3>Inserir Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="nome_anime" placeholder="Nome do Anime" required>
+        <input type="number" name="numero_ep" placeholder="Número do Episódio" min="1" required>
+        <input type="number" name="nota" placeholder="Nota" min="0" max="10" step="1" required>
+        <textarea name="comentario" placeholder="Comentário" rows="3" required></textarea>
+        <button type="submit" name="acao" value="inserirReviewEpisodio">Inserir</button>
+      </form>
+    </section>
+
+    <section class="review-section">
+      <h3>Remover Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <button type="submit" name="acao" value="removerReviewEpisodio">Remover</button>
+      </form>
+    </section>
+
+    <section class="review-section">
+      <h3>Atualizar Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <input type="number" name="nova_nota" placeholder="Nova Nota" min="0" max="10" step="1">
+        <textarea name="novo_comentario" placeholder="Novo Comentário" rows="3"></textarea>
+        <button type="submit" name="acao" value="atualizarReviewEpisodio">Atualizar</button>
+      </form>
+    </section>
+
+    <!-- BUSCAR -->
+    <section class="review-section">
+      <h3>Buscar Review</h3>
+      <form class="review-form" method="post" action="">
+        <input type="text" name="review_id" placeholder="ID da Review" required>
+        <button type="submit" name="acao" value="buscarReviewEpisodio">Buscar</button>
+      </form>
+
+      {% if resultado_busca_ep %}
+        {% if resultado_busca_ep.erro %}
+          <p style="color: #b00; margin-top: 8px;">{{ resultado_busca_ep.erro }}</p>
+        {% else %}
+          <div class="card" style="margin-top: 8px; border: 1px solid #ddd; padding: 12px; border-radius: 8px;">
+            <strong>Resultado:</strong>
+            <p><b>ID:</b> {{ resultado_busca_ep.id }}</p>
+            <p><b>Usuário ID:</b> {{ resultado_busca_ep.user_id }}</p>
+            <p><b>Episódio ID:</b> {{ resultado_busca_ep.episodio_id }}</p>
+            <p><b>Anime ID:</b> {{ resultado_busca_ep.anime_id }}</p>
+            <p><b>Nota:</b> {{ resultado_busca_ep.nota }}</p>
+            <p><b>Comentário:</b> {{ resultado_busca_ep.descricao or "-" }}</p>
+          </div>
+        {% endif %}
+      {% endif %}
+    </section>
+
+    <section class="review-section">
+      <h3>Lista de Reviews</h3>
+      <form class="review-form" method="post" action="" style="margin-bottom: 10px;">
+        <button type="submit" name="acao" value="listarReviewsEpisodios">Recarregar Lista</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuário ID</th>
+            <th>Episódio ID</th>
+            <th>Anime ID</th>
+            <th>Nota</th>
+            <th>Comentário</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if reviews_episodios and reviews_episodios|length > 0 %}
+            {% for r in reviews_episodios %}
+              <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.user_id }}</td>
+                <td>{{ r.episodio_id }}</td>
+                <td>{{ r.anime_id }}</td>
+                <td>{{ r.nota }}</td>
+                <td>{{ r.descricao or "-" }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="6" style="text-align:center;">Sem reviews de episódios ainda.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </section>
 </body>
 </html>

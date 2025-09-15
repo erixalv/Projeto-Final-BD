@@ -1,10 +1,22 @@
 from src.config.bd_config import User, get_session 
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
 
 class User_CRUD:
 
     def __init__(self):
         pass
+
+    def _to_dict(self, u: User):
+        if not u:
+            return None
+        return {
+            "id": u.id,
+            "nome": u.nome,
+            "nickname": u.nickname,
+            "email": u.email,
+            "role": u.role,
+        }
 
     # Função para inserir um novo usuário
     def inserir_usuario(self, nome, nickname, email, senha_plana, role):
@@ -29,7 +41,7 @@ class User_CRUD:
             if user is None:
                 print("Usuário não encontrado.")
                 return
-            return user
+            return self._to_dict(user)
         
     def buscar_usuario_por_email(self, email_search):
         with get_session() as db:
@@ -37,8 +49,17 @@ class User_CRUD:
             if user is None:
                 print("Usuário não encontrado.")
                 return
-            return user
+            return self._to_dict(user)
+
         
+    def buscar_usuario_por_id(self, id, db):
+        with get_session() as db:
+            user = db.query(User).filter(User.id == id).one_or_none()
+            if user is None:
+                print("Usuário não encontrado.")
+                return
+            return self._to_dict(user)
+
     def remover_usuario(self, nick):
         with get_session() as db:
             user = db.query(User).filter(User.nickname == nick).one_or_none()
@@ -50,9 +71,16 @@ class User_CRUD:
         
     def listar_usuarios(self):
         with get_session() as db:
-            return(
-                db.query(User).order_by(User.nome.asc()).all()
+            rows = (
+                db.execute(
+                    select(User.id, User.nome, User.nickname, User.email, User.role)
+                    .order_by(User.nome.asc())
+                )
+                .mappings()
+                .all()
             )
+            # rows já são mappings; se quiser garantir dicts “puros”:
+            return [dict(r) for r in rows]
         
     def atualizar_senha(self, nick : str, senha_atual : str, senha_nova : str):
         with get_session() as db:

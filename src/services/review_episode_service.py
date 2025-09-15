@@ -29,7 +29,7 @@ class ReviewEpisodeCRUD():
             db.rollback()
             return print(f"Erro capturado: {e}")
     
-    def delete_review_anime(self, reviewID):
+    def delete_review_episode(self, reviewID):
         with get_session() as db:
             review = db.query(ReviewEpisode).filter(ReviewEpisode.id == reviewID).one_or_none()
             if review is None: return print("Review não encontrada")
@@ -38,9 +38,12 @@ class ReviewEpisodeCRUD():
         
     def listar_reviews_episodios(self):
         with get_session() as db:
-            return(
-                db.query(ReviewEpisode).order_by(ReviewEpisode.nota.desc()).all()
+            rows = (
+                db.query(ReviewEpisode.id, ReviewEpisode.user_id, ReviewEpisode.episodio_id, ReviewEpisode.anime_id, ReviewEpisode.nota, ReviewEpisode.descricao)
+                .order_by(ReviewEpisode.nota.desc())
+                .all()
             )
+            return [dict(r._mapping) for r in rows]
         
     def atualizar_review(self, reviewID, nova_nota : int = None, nova_desc : str = None):
         with get_session() as db:
@@ -52,12 +55,17 @@ class ReviewEpisodeCRUD():
         
     def buscar_Review(self, reviewID):
         with get_session() as db:
-            review = db.query(ReviewEpisode).filter(ReviewEpisode.id == reviewID).one_or_none()
-            if review is None: return print("Review não encontrada")
-            return review
+            r = (
+                db.query(ReviewEpisode.id, ReviewEpisode.user_id, ReviewEpisode.episodio_id, ReviewEpisode.anime_id, ReviewEpisode.nota, ReviewEpisode.descricao)
+                .filter(ReviewEpisode.id == reviewID)
+                .one_or_none()
+            )
+            if r is None:
+                return None
+            return dict(r._mapping)
         
 review = ReviewEpisodeCRUD()
 
 #review.insert_review_episode("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "b25793bf-b41c-4ea7-aafe-e14a9332a992","356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Melhor ep!")  
 #review.atualizar_review("f4f52ef6-493b-4178-87bb-935aadebe4c5", nova_desc="Amei muito o ep, o final então...")
-review.delete_review_anime("f4f52ef6-493b-4178-87bb-935aadebe4c5")
+#review.delete_review_anime("f4f52ef6-493b-4178-87bb-935aadebe4c5")
