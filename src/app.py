@@ -18,14 +18,12 @@ from sqlalchemy import text
 
 user_managing = User_CRUD()
 
-# Carregar variáveis de ambiente
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_KEY")
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
-# Configuração do banco de dados
 USER = os.getenv("PG_USER")
 PASSWORD = os.getenv("PG_PASSWORD")
 BD_NAME = os.getenv("PG_BD_NAME")
@@ -42,14 +40,12 @@ def login():
         senha = request.form['senha']
 
         with get_session() as db:
-            # Busca o usuário dentro da sessão
             user = db.query(User).filter(User.email == email).one_or_none()
 
             if user is None:
                 flash("Email ou senha incorretos!", 'danger')
                 return render_template('index.html')
 
-            # A verificação da senha já pode ser feita fora da sessão
             if pwd_context.verify(senha, user.senha_hash):
                 session['usuario_id'] = user.id
                 if user.role == 'USER':
@@ -98,13 +94,11 @@ def relatorios():
 
 @app.route('/usuarios', methods=['GET', 'POST'])
 def usuarios():
-    # Protege com login (opcional: restrinja a admin se quiser)
     usuario_id = session.get('usuario_id')
     if not usuario_id:
         flash("Você precisa estar logado!", "danger")
         return redirect(url_for('login'))
 
-    # Variáveis para o template
     usuario_busca = None
     usuarios_lista = None
 
@@ -170,7 +164,6 @@ def usuarios():
             email_novo = request.form.get('email_novo') or None
             try:
                 msg = user_managing.atualizar_dados(nickname, nome_novo, email_novo)
-                # a sua função imprime mensagens; aqui só damos um feedback visual
                 flash("Dados atualizados (se os dados estiverem corretos).", "info")
             except Exception as e:
                 flash(f"Erro ao atualizar dados: {e}", "danger")
@@ -457,7 +450,6 @@ def gerenciador_animes():
                 if not ep_b:
                     flash('Episódio não encontrado.', 'warning')
                 else:
-                    # mantém o "Resultado" preenchido, se quiser
                     ep_dict = {
                         'id': ep_b.id,
                         'nome': ep_b.nome,
@@ -465,7 +457,6 @@ def gerenciador_animes():
                         'anime_id': ep_b.anime_id,
                         'sinopse': ep_b.sinopse
                     }
-                    # dados para o formulário de edição
                     ep_edit = {
                         'id': ep_b.id,
                         'nome': ep_b.nome,

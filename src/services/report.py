@@ -10,7 +10,6 @@ def contar_relacoes_unicas(chaveDoObjeto):
         return total
     
 def media_notas_por_anime():
-    # Retorna a ocorrência de reviews de cada anime e sua média
     with get_session() as session:
         query = select(
             Anime.nome,
@@ -36,6 +35,5 @@ def contar_usuarios_avaliadores():
         qtd = session.execute(query).scalar_one()
         return qtd
 
-#top5maisavaliados
     
 print(contar_usuarios_avaliadores())

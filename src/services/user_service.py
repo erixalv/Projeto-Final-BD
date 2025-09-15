@@ -18,9 +18,7 @@ class User_CRUD:
             "role": u.role,
         }
 
-    # Função para inserir um novo usuário
     def inserir_usuario(self, nome, nickname, email, senha_plana, role):
-        # Criação de um novo usuário
         user = User(
             nome=nome,
             nickname=nickname,
@@ -29,7 +27,6 @@ class User_CRUD:
             role = role
         )
 
-        # Inserir no banco de dados
         with get_session() as db:
             db.add(user)  
             db.commit()   
@@ -79,7 +76,6 @@ class User_CRUD:
                 .mappings()
                 .all()
             )
-            # rows já são mappings; se quiser garantir dicts “puros”:
             return [dict(r) for r in rows]
         
     def atualizar_senha(self, nick : str, senha_atual : str, senha_nova : str):
