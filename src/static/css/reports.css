@@ -59,10 +59,12 @@ html, body{
 
 .kpis{
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap:16px;
   margin-bottom:24px;
+  flex-wrap: wrap;
 }
+
 
 .kpi{
   background:var(--card);
@@ -88,6 +90,7 @@ html, body{
   border:1px solid var(--border);
   border-radius:12px;
   padding:16px;
+  margin-top:24px; /* Aumenta o espaçamento entre seções */
 }
 
 .card h2{

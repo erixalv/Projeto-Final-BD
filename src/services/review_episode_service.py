@@ -45,6 +45,34 @@ class ReviewEpisodeCRUD():
             )
             return [dict(r._mapping) for r in rows]
         
+    def listar_reviews_usuario(self, usuario_id):
+        with get_session() as db:
+            reviews = (
+                db.query(
+                    ReviewEpisode.id,
+                    ReviewEpisode.nota,
+                    ReviewEpisode.descricao,
+                    Episodes.num_ep,
+                    Episodes.nome.label("episodio_nome"),
+                    Anime.nome.label("anime_nome"),
+                )
+                .join(Episodes, ReviewEpisode.episodio_id == Episodes.id)
+                .join(Anime, ReviewEpisode.anime_id == Anime.id)
+                .filter(ReviewEpisode.user_id == usuario_id)
+                .all()
+            )
+            return [
+                {
+                    "id": r.id,
+                    "nota": r.nota,
+                    "comentario": r.descricao,
+                    "episodio_nome": r.episodio_nome,
+                    "num_ep": r.num_ep,
+                    "anime_nome": r.anime_nome,
+                }
+                for r in reviews
+            ]
+        
     def atualizar_review(self, reviewID, nova_nota : int = None, nova_desc : str = None):
         with get_session() as db:
             review = db.query(ReviewEpisode).filter(ReviewEpisode.id == reviewID).one_or_none()
@@ -55,14 +83,27 @@ class ReviewEpisodeCRUD():
         
     def buscar_Review(self, reviewID):
         with get_session() as db:
-            r = (
-                db.query(ReviewEpisode.id, ReviewEpisode.user_id, ReviewEpisode.episodio_id, ReviewEpisode.anime_id, ReviewEpisode.nota, ReviewEpisode.descricao)
+            # A consulta agora faz JOIN com Episodes e Anime
+            review_data = (
+                db.query(
+                    ReviewEpisode.id,
+                    ReviewEpisode.nota,
+                    ReviewEpisode.descricao,
+                    Episodes.nome.label("episodio_nome"), 
+                    Episodes.num_ep,                      
+                    Anime.nome.label("anime_nome")        
+                )
+                .join(Episodes, ReviewEpisode.episodio_id == Episodes.id)
+                .join(Anime, ReviewEpisode.anime_id == Anime.id)          
                 .filter(ReviewEpisode.id == reviewID)
                 .one_or_none()
             )
-            if r is None:
+
+            if review_data is None:
                 return None
-            return dict(r._mapping)
+
+            return dict(review_data._mapping)
+
         
 review = ReviewEpisodeCRUD()
 

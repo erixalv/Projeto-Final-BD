@@ -13,6 +13,8 @@ from services.review_anime_service import ReviewAnimeCRUD
 from services.review_episode_service import ReviewEpisodeCRUD
 from services.report import media_notas_por_anime
 from config.bd_config import User, Anime, Episodes, get_session
+from services.report import media_notas_por_anime, anime_mais_bem_avaliado, anime_com_mais_reviews, total_usuarios_cadastrados
+
 
 from sqlalchemy import text
 
@@ -66,15 +68,17 @@ def relatorios():
         return redirect(url_for('login'))
 
     with get_session() as db:
+        # Consulta que você já tinha (Média de notas por episódio)
         media_anime_rows = db.execute(
             text("SELECT nome, count, avg FROM vw_media_nota_episodio")
         ).mappings().all()
 
-        qtd_usuarios = db.execute(
+        # Consulta que você já tinha (Contagem de usuários avaliadores)
+        qtd_usuarios_avaliadores = db.execute(
             text("SELECT fn_contar_usuarios_avaliadores() AS qtd")
         ).scalar_one()
 
-
+        # Consulta que você já tinha (Média de notas por anime)
         rows = media_notas_por_anime()
         media_por_anime = [
             {
@@ -85,11 +89,19 @@ def relatorios():
             for r in rows
         ]
 
+
+    total_de_usuarios = total_usuarios_cadastrados()
+    anime_top_avaliado = anime_mais_bem_avaliado()
+    anime_top_reviews = anime_com_mais_reviews()
+
     return render_template(
         'relatorios.html',
         media_anime=media_anime_rows,
-        qtd_usuarios=qtd_usuarios,
-        media_por_anime=media_por_anime  
+        qtd_usuarios=qtd_usuarios_avaliadores,
+        media_por_anime=media_por_anime,
+        total_de_usuarios=total_de_usuarios,
+        anime_top_avaliado=anime_top_avaliado,
+        anime_top_reviews=anime_top_reviews
     )
 
 @app.route('/usuarios', methods=['GET', 'POST'])
@@ -230,7 +242,7 @@ def cadastro_reviews():
                 resultado_busca_anime = {"erro": "Review não encontrada."}
 
         elif acao == "listarReviewsAnimes":
-            reviews_animes = anime_review.listar_reviews_animes()
+            reviews_animes = anime_review.listar_reviews_usuario(usuario_id)
 
         # -------------------- EPISÓDIOS --------------------
         elif acao == "inserirReviewEpisodio":
@@ -272,7 +284,7 @@ def cadastro_reviews():
                 resultado_busca_ep = {"erro": "Review não encontrada."}
 
         elif acao == "listarReviewsEpisodios":
-            reviews_episodios = episode_review.listar_reviews_episodios()
+            reviews_episodios = episode_review.listar_reviews_usuario(usuario_id)
 
     return render_template(
         "reviews.html",
@@ -292,7 +304,7 @@ def gerenciador_animes():
 
     episodio = Episode_CRUD()
     ep_dict = None
-    lista_nomes_eps = None
+    episodios_agrupados = {}
     ep_edit = None
 
     if request.method == 'POST':
@@ -441,7 +453,22 @@ def gerenciador_animes():
                  
         if acao == 'listarAllEps':
             with get_session() as db:
-                lista_nomes_eps = episodio.listar_episodios_por_nome(db)
+                # 1. Chame a nova função que busca os dados ordenados
+                resultados_db = episodio.listar_episodios_por_anime(db)
+
+                # 2. Processe os resultados para agrupar em um dicionário
+                episodios_agrupados = {}
+                for item in resultados_db:
+                    # Se o nome do anime ainda não for uma chave no dicionário...
+                    if item.anime_nome not in episodios_agrupados:
+                        # ...crie a chave com uma lista vazia.
+                        episodios_agrupados[item.anime_nome] = []
+                    
+                    # Adicione o episódio (como um dicionário) à lista daquele anime.
+                    episodios_agrupados[item.anime_nome].append({
+                        "num_ep": item.num_ep,
+                        "nome": item.episodio_nome
+                    })
 
         if acao == 'prepararAlteracaoEp':
             nome = request.form['nome_do_episodio_edit']
@@ -469,7 +496,7 @@ def gerenciador_animes():
                         lista_nomes=lista_nomes,
                         anime_edit=anime_edit,
                         ep=ep_dict,
-                        lista_nomes_eps=lista_nomes_eps,
+                        lista_nomes_eps=episodios_agrupados,
                         ep_edit=ep_edit
                     )
 
@@ -491,7 +518,7 @@ def gerenciador_animes():
                         lista_nomes=lista_nomes,
                         anime_edit=anime_edit,
                         ep=ep_dict,
-                        lista_nomes_eps=lista_nomes_eps,
+                        lista_nomes_eps=episodios_agrupados,
                         ep_edit=ep_edit
                     )
 
@@ -513,7 +540,7 @@ def gerenciador_animes():
         #-----------------------------------------------------------
 
 
-    return render_template('gerenciador.html', anime=anime_dict, lista_nomes=lista_nomes, anime_edit=anime_edit, ep=ep_dict, lista_nomes_eps = lista_nomes_eps, ep_edit=ep_edit)
+    return render_template('gerenciador.html', anime=anime_dict, lista_nomes=lista_nomes, anime_edit=anime_edit, ep=ep_dict, episodios_agrupados = episodios_agrupados, ep_edit=ep_edit)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -14,13 +14,44 @@
 
   <main class="container">
 
+    <!-- Seção de KPIs Unificada -->
     <section class="kpis">
+      <!-- KPI: Usuários que avaliaram -->
       <div class="kpi">
         <div class="kpi-label">Usuários que avaliaram animes</div>
         <div class="kpi-value">{{ qtd_usuarios }}</div>
       </div>
+
+      <!-- KPI: Total de Usuários -->
+      <div class="kpi">
+        <div class="kpi-label">Total de Usuários Cadastrados</div>
+        <div class="kpi-value">{{ total_de_usuarios }}</div>
+      </div>
+
+      <!-- KPI: Anime Mais Bem Avaliado -->
+      <div class="kpi">
+        <div class="kpi-label">Anime Mais Bem Avaliado</div>
+        {% if anime_top_avaliado %}
+          <div class="kpi-value" style="font-size: 1.5rem; color: var(--accent);">{{ anime_top_avaliado.nome }}</div>
+          <div class="kpi-sub-value" style="color: var(--muted); font-size: 1rem;">Nota: {{ "%.2f"|format(anime_top_avaliado.media) }}</div>
+        {% else %}
+          <div class="kpi-value" style="font-size: 1rem; color: var(--muted);">N/A</div>
+        {% endif %}
+      </div>
+
+      <!-- KPI: Anime Mais Popular -->
+      <div class="kpi">
+        <div class="kpi-label">Anime com Mais Reviews</div>
+        {% if anime_top_reviews %}
+          <div class="kpi-value" style="font-size: 1.5rem; color: var(--accent);">{{ anime_top_reviews.nome }}</div>
+          <div class="kpi-sub-value" style="color: var(--muted); font-size: 1rem;">{{ anime_top_reviews.reviews }} reviews</div>
+        {% else %}
+          <div class="kpi-value" style="font-size: 1rem; color: var(--muted);">N/A</div>
+        {% endif %}
+      </div>
     </section>
 
+    <!-- Seção de Média de notas por episódio (agregado por anime) -->
     <section class="card">
       <h2>Média de notas por episódio (agregado por anime)</h2>
 
@@ -50,34 +81,35 @@
       </div>
     </section>
 
+
+    <!-- Seção de Média de notas por anime -->
     <section class="card" style="margin-top:16px;">
-    <h2>Média de notas por anime</h2>
-    <div class="table-wrap">
+      <h2>Média de notas por anime</h2>
+      <div class="table-wrap">
         <table>
-        <thead>
+          <thead>
             <tr>
-            <th>Anime</th>
-            <th>Qtde de Reviews</th>
-            <th>Média de Nota</th>
+              <th>Anime</th>
+              <th>Qtde de Reviews</th>
+              <th>Média de Nota</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% if media_por_anime and media_por_anime|length > 0 %}
-            {% for r in media_por_anime %}
-            <tr>
+              {% for r in media_por_anime %}
+              <tr>
                 <td class="anime-nome">{{ r.anime_nome }}</td>
                 <td>{{ r.qtde_reviews }}</td>
                 <td>{{ "%.2f"|format(r.media_nota) }}</td>
-            </tr>
-            {% endfor %}
+              </tr>
+              {% endfor %}
             {% else %}
-            <tr><td colspan="3" class="empty">Sem dados para exibir.</td></tr>
+              <tr><td colspan="3" class="empty">Sem dados para exibir.</td></tr>
             {% endif %}
-        </tbody>
+          </tbody>
         </table>
-    </div>
+      </div>
     </section>
-
 
   </main>
 </body>

@@ -20,6 +20,7 @@
   <section id="animes" class="review-section">
     <h2>Animes</h2>
 
+    <!-- INSERIR -->
     <section class="review-section">
       <h3>Inserir Review</h3>
       <form class="review-form" method="post" action="">
@@ -30,6 +31,7 @@
       </form>
     </section>
 
+    <!-- REMOVER -->
     <section class="review-section">
       <h3>Remover Review</h3>
       <form class="review-form" method="post" action="">
@@ -38,6 +40,7 @@
       </form>
     </section>
 
+    <!-- ATUALIZAR -->
     <section class="review-section">
       <h3>Atualizar Review</h3>
       <form class="review-form" method="post" action="">
@@ -48,6 +51,7 @@
       </form>
     </section>
 
+    <!-- BUSCAR -->
     <section class="review-section">
       <h3>Buscar Review</h3>
       <form class="review-form" method="post" action="">
@@ -62,8 +66,7 @@
           <div class="card" style="margin-top: 8px; border: 1px solid #ddd; padding: 12px; border-radius: 8px;">
             <strong>Resultado:</strong>
             <p><b>ID:</b> {{ resultado_busca_anime.id }}</p>
-            <p><b>Usuário ID:</b> {{ resultado_busca_anime.user_id }}</p>
-            <p><b>Anime ID:</b> {{ resultado_busca_anime.anime_id }}</p>
+            <p><b>Anime:</b> {{ resultado_busca_anime.anime_nome }}</p>
             <p><b>Nota:</b> {{ resultado_busca_anime.nota }}</p>
             <p><b>Comentário:</b> {{ resultado_busca_anime.descricao or "-" }}</p>
           </div>
@@ -71,6 +74,7 @@
       {% endif %}
     </section>
 
+    <!-- LISTA -->
     <section class="review-section">
       <h3>Lista de Reviews</h3>
       <form class="review-form" method="post" action="" style="margin-bottom: 10px;">
@@ -80,8 +84,7 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Usuário ID</th>
-            <th>Anime ID</th>
+            <th>Anime</th>
             <th>Nota</th>
             <th>Comentário</th>
           </tr>
@@ -91,14 +94,13 @@
             {% for r in reviews_animes %}
               <tr>
                 <td>{{ r.id }}</td>
-                <td>{{ r.user_id }}</td>
-                <td>{{ r.anime_id }}</td>
+                <td>{{ r.anime_nome }}</td>
                 <td>{{ r.nota }}</td>
-                <td>{{ r.descricao or "-" }}</td>
+                <td>{{ r.comentario or "-" }}</td>
               </tr>
             {% endfor %}
           {% else %}
-            <tr><td colspan="5" style="text-align:center;">Sem reviews de animes ainda.</td></tr>
+            <tr><td colspan="4" style="text-align:center;">Sem reviews de animes ainda.</td></tr>
           {% endif %}
         </tbody>
       </table>
@@ -111,6 +113,7 @@
   <section id="episodios" class="review-section">
     <h2>Episódios</h2>
 
+    <!-- INSERIR -->
     <section class="review-section">
       <h3>Inserir Review</h3>
       <form class="review-form" method="post" action="">
@@ -122,6 +125,7 @@
       </form>
     </section>
 
+    <!-- REMOVER -->
     <section class="review-section">
       <h3>Remover Review</h3>
       <form class="review-form" method="post" action="">
@@ -130,6 +134,7 @@
       </form>
     </section>
 
+    <!-- ATUALIZAR -->
     <section class="review-section">
       <h3>Atualizar Review</h3>
       <form class="review-form" method="post" action="">
@@ -155,9 +160,8 @@
           <div class="card" style="margin-top: 8px; border: 1px solid #ddd; padding: 12px; border-radius: 8px;">
             <strong>Resultado:</strong>
             <p><b>ID:</b> {{ resultado_busca_ep.id }}</p>
-            <p><b>Usuário ID:</b> {{ resultado_busca_ep.user_id }}</p>
-            <p><b>Episódio ID:</b> {{ resultado_busca_ep.episodio_id }}</p>
-            <p><b>Anime ID:</b> {{ resultado_busca_ep.anime_id }}</p>
+            <p><b>Anime:</b> {{ resultado_busca_ep.anime_nome }}</p>
+            <p><b>Episódio:</b> {{ resultado_busca_ep.num_ep }} - {{ resultado_busca_ep.episodio_nome }}</p>
             <p><b>Nota:</b> {{ resultado_busca_ep.nota }}</p>
             <p><b>Comentário:</b> {{ resultado_busca_ep.descricao or "-" }}</p>
           </div>
@@ -165,6 +169,7 @@
       {% endif %}
     </section>
 
+    <!-- LISTA -->
     <section class="review-section">
       <h3>Lista de Reviews</h3>
       <form class="review-form" method="post" action="" style="margin-bottom: 10px;">
@@ -174,9 +179,8 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Usuário ID</th>
-            <th>Episódio ID</th>
-            <th>Anime ID</th>
+            <th>Anime</th>
+            <th>Episódio</th>
             <th>Nota</th>
             <th>Comentário</th>
           </tr>
@@ -186,15 +190,14 @@
             {% for r in reviews_episodios %}
               <tr>
                 <td>{{ r.id }}</td>
-                <td>{{ r.user_id }}</td>
-                <td>{{ r.episodio_id }}</td>
-                <td>{{ r.anime_id }}</td>
+                <td>{{ r.anime_nome }}</td>
+                <td>{{ r.num_ep }} - {{ r.episodio_nome }}</td>
                 <td>{{ r.nota }}</td>
-                <td>{{ r.descricao or "-" }}</td>
+                <td>{{ r.comentario or "-" }}</td>
               </tr>
             {% endfor %}
           {% else %}
-            <tr><td colspan="6" style="text-align:center;">Sem reviews de episódios ainda.</td></tr>
+            <tr><td colspan="5" style="text-align:center;">Sem reviews de episódios ainda.</td></tr>
           {% endif %}
         </tbody>
       </table>

@@ -139,15 +139,34 @@
             <form action="" method="post">
                 <button type="submit" name="acao" value="listarAllEps">Listar</button>
             </form>
-            {% if lista_nomes_eps and lista_nomes_eps|length > 0 %}
-                <h4>Episódios cadastrados:</h4>
-                <ul>
-                    {% for ep in lista_nomes_eps %}
-                    <li>{{ ep[0] }}</li>
+            {% if episodios_agrupados %}
+                <h4>Lista de Episódios por Anime</h4>
+                <div class="accordion" id="accordionAnimes">
+                    
+                    <!-- Loop 1: Itera sobre os animes (as chaves do dicionário) -->
+                    {% for anime_nome, episodios_lista in episodios_agrupados.items() %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-{{ loop.index }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ loop.index }}" aria-expanded="false" aria-controls="collapse-{{ loop.index }}">
+                                    <strong>{{ anime_nome }}</strong> ({{ episodios_lista|length }} episódios)
+                                </button>
+                            </h2>
+                            <div id="collapse-{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ loop.index }}" data-bs-parent="#accordionAnimes">
+                                <div class="accordion-body">
+                                    <ul class="list-group">
+                                        <!-- Loop 2: Itera sobre a lista de episódios de cada anime -->
+                                        {% for ep in episodios_lista %}
+                                            <li class="list-group-item">
+                                                Episódio {{ ep.num_ep }}: {{ ep.nome }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
-            {% elif lista_nomes_eps is not none %}
-                <p>Nenhum episódio cadastrado.</p>
+
+                </div>
             {% endif %}
 
         <h3>Alterar Episódio</h3>

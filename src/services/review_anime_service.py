@@ -43,6 +43,24 @@ class ReviewAnimeCRUD():
             )
             return [dict(r._mapping) for r in rows]
         
+    def listar_reviews_usuario(self, usuario_id):
+        with get_session() as db:
+            reviews = (
+                db.query(ReviewAnime.id, ReviewAnime.nota, ReviewAnime.descricao, Anime.nome.label("anime_nome"))
+                .join(Anime, ReviewAnime.anime_id == Anime.id)
+                .filter(ReviewAnime.user_id == usuario_id)
+                .all()
+            )
+            return [
+                {
+                    "id": r.id,
+                    "nota": r.nota,
+                    "comentario": r.descricao,
+                    "anime_nome": r.anime_nome,
+                }
+                for r in reviews
+            ]
+
     def atualizar_review(self, reviewID, nova_nota : int = None, nova_desc : str = None):
         with get_session() as db:
             review = db.query(ReviewAnime).filter(ReviewAnime.id == reviewID).one_or_none()
@@ -53,15 +71,22 @@ class ReviewAnimeCRUD():
         
     def buscar_Review(self, reviewID):
         with get_session() as db:
-            r = (
-                db.query(ReviewAnime.id, ReviewAnime.user_id, ReviewAnime.anime_id, ReviewAnime.nota, ReviewAnime.descricao)
+            review_data = (
+                db.query(
+                    ReviewAnime.id,
+                    ReviewAnime.nota,
+                    ReviewAnime.descricao,
+                    Anime.nome.label("anime_nome")  
+                )
+                .join(Anime, ReviewAnime.anime_id == Anime.id) 
                 .filter(ReviewAnime.id == reviewID)
                 .one_or_none()
             )
-            if r is None:
-                return None
-            return dict(r._mapping)
 
+            if review_data is None:
+                return None
+
+            return dict(review_data._mapping)
 
 #review = ReviewAnimeCRUD()
 #review.insert_review_anime("e935e81f-f6b0-49d2-9919-5ee3b7915f5d", "356c0f51-39c7-43db-8c07-4bd55711535d", 5, "Gostei muito do anime, muito perfeito, melhor anime já feito!")      

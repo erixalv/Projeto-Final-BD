@@ -33,8 +33,22 @@ class Episode_CRUD:
             print(f"Erro inesperado: {e}")
             return None
 
-    def listar_episodios_por_nome(self, db):
-        return db.query(Episodes.nome).order_by(Episodes.nome.asc()).all()
+    def listar_episodios_por_anime(self, db):
+        """
+        Busca todos os episódios e o nome do anime correspondente,
+        ordenados pelo nome do anime e depois pelo número do episódio.
+        """
+        resultados = (
+            db.query(
+                Anime.nome.label("anime_nome"),
+                Episodes.num_ep,
+                Episodes.nome.label("episodio_nome")
+            )
+            .join(Anime, Episodes.anime_id == Anime.id) # Conecta Episódio com Anime
+            .order_by(Anime.nome.asc(), Episodes.num_ep.asc()) # Ordenação crucial!
+            .all()
+        )
+        return resultados
 
     def buscar_episodio(self, episodio_id):
         with get_session() as db:
