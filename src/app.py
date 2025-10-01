@@ -68,17 +68,14 @@ def relatorios():
         return redirect(url_for('login'))
 
     with get_session() as db:
-        # Consulta que você já tinha (Média de notas por episódio)
         media_anime_rows = db.execute(
             text("SELECT nome, count, avg FROM vw_media_nota_episodio")
         ).mappings().all()
 
-        # Consulta que você já tinha (Contagem de usuários avaliadores)
         qtd_usuarios_avaliadores = db.execute(
             text("SELECT fn_contar_usuarios_avaliadores() AS qtd")
         ).scalar_one()
 
-        # Consulta que você já tinha (Média de notas por anime)
         rows = media_notas_por_anime()
         media_por_anime = [
             {
@@ -312,7 +309,6 @@ def gerenciador_animes():
 
 
         #CRUD DE ANIMES
-        #-----------------------------------------------------------
         if acao =='cadastrarAnime':
             nome = request.form['nome_do_anime']
             genero = request.form['genero_do_anime']
@@ -537,7 +533,6 @@ def gerenciador_animes():
                         flash('Episódio não encontrado para atualização.', 'warning')
             except Exception as e:
                 flash(f'Erro ao atualizar episódio: {e}', 'danger')
-        #-----------------------------------------------------------
 
 
     return render_template('gerenciador.html', anime=anime_dict, lista_nomes=lista_nomes, anime_edit=anime_edit, ep=ep_dict, episodios_agrupados = episodios_agrupados, ep_edit=ep_edit)

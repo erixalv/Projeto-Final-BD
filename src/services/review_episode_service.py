@@ -83,7 +83,6 @@ class ReviewEpisodeCRUD():
         
     def buscar_Review(self, reviewID):
         with get_session() as db:
-            # A consulta agora faz JOIN com Episodes e Anime
             review_data = (
                 db.query(
                     ReviewEpisode.id,

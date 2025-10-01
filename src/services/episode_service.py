@@ -34,18 +34,14 @@ class Episode_CRUD:
             return None
 
     def listar_episodios_por_anime(self, db):
-        """
-        Busca todos os episódios e o nome do anime correspondente,
-        ordenados pelo nome do anime e depois pelo número do episódio.
-        """
         resultados = (
             db.query(
                 Anime.nome.label("anime_nome"),
                 Episodes.num_ep,
                 Episodes.nome.label("episodio_nome")
             )
-            .join(Anime, Episodes.anime_id == Anime.id) # Conecta Episódio com Anime
-            .order_by(Anime.nome.asc(), Episodes.num_ep.asc()) # Ordenação crucial!
+            .join(Anime, Episodes.anime_id == Anime.id) 
+            .order_by(Anime.nome.asc(), Episodes.num_ep.asc()) 
             .all()
         )
         return resultados
